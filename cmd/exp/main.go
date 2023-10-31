@@ -1,31 +1,12 @@
 package main
 
-import (
-	"errors"
-	"fmt"
-)
+import "fmt"
 
-func main() {
-	err := CreateOrg()
-	fmt.Println(err)
-}
-func Connect() error {
-	return errors.New("Connection Failed")
+func blah() {
+	panic("...")
 }
 
-func CreateUser() error {
-	err := Connect()
-	if err != nil {
-		return fmt.Errorf("create user :%w", err)
-	}
-	//..continue...
-	return nil
-}
-
-func CreateOrg() error {
-	err := CreateUser()
-	if err != nil {
-		return fmt.Errorf("Create Org : %w", err)
-	}
-	return nil
+func mian() {
+	numbers := []int{1, 2, 3.}
+	fmt.Println(numbers[4])
 }
