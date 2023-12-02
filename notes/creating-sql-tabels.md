@@ -6,6 +6,8 @@
         field_name TYPE(args) CONTRAINTS
     );
 ```
+EXAMPLE SQL:
+
 ```sql
     CREATE TABLE users(
         id SERIAL PRIMARY KEY,
@@ -14,3 +16,4 @@
     )
 
 ```
+
