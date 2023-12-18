@@ -20,6 +20,7 @@ func (u Users) New(w http.ResponseWriter, r *http.Request) {
 	}
 	data.Email = r.FormValue("email")
 	u.Templates.New.Execute(w, data)
+
 }
 
 func (u Users) Create(w http.ResponseWriter, r *http.Request) {
