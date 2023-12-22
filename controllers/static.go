@@ -12,28 +12,28 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 }
 
 func FAQ(tpl Template) http.HandlerFunc {
-	question := []struct {
+	questions := []struct {
 		Question string
 		Answer   template.HTML
 	}{
 		{
-			Question: "Is there a free Version ?",
-			Answer:   "Yes We do offer a 30 Day Free trial",
+			Question: "Is there a free version?",
+			Answer:   "Yes! We offer a free trial for 30 days on any paid plans.",
 		},
 		{
-			Question: "What Are you support hours ?",
-			Answer:   "24/7",
+			Question: "What are your support hours?",
+			Answer:   "We have support staff answering emails 24/7, though response times may be a bit slower on weekends.",
 		},
 		{
-			Question: "Contact Options ?",
-			Answer:   ` Email us - <a href="mailto:sun.motiani@gmail.com">sun.motiani@gmail.com</a>`,
+			Question: "How do I contact support?",
+			Answer:   `Email us - <a href="mailto:support@lenslocked.com">support@lenslocked.com</a>`,
 		},
 		{
-			Question: "Office Location?",
-			Answer:   "our entire team is remote",
+			Question: "Where is your office?",
+			Answer:   "Our entire team is remote!",
 		},
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		tpl.Execute(w, r, question)
+		tpl.Execute(w, r, questions)
 	}
 }

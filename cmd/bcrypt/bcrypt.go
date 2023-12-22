@@ -14,21 +14,22 @@ func main() {
 	case "compare":
 		compare(os.Args[2], os.Args[3])
 	default:
-		fmt.Printf("Invalid Command %v\n", os.Args[1])
+		fmt.Printf("Invalid command: %v\n", os.Args[1])
 	}
 }
 
 func hash(password string) {
-	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedBytes, err := bcrypt.GenerateFromPassword(
+		[]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		fmt.Printf("Error Hashing : %v\n", password)
+		fmt.Printf("error hashing: %v\n", err)
 		return
 	}
-	fmt.Println(string(hashedBytes))
-
+	hash := string(hashedBytes)
+	fmt.Println(hash)
 }
 
-func compare(password string, hash string) {
+func compare(password, hash string) {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {
 		fmt.Printf("Password is invalid: %v\n", password)
