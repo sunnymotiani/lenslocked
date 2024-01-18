@@ -1,23 +1,37 @@
 package main
 
 import (
-	"os"
+	"fmt"
 
-	"github.com/go-mail/mail/v2"
+	"github.com/joncalhoun/lenslocked/models"
+)
+
+const (
+	host     = "sandbox.smtp.mailtrap.io"
+	port     = 587
+	username = "989b7e62f05bc6"
+	password = "50c07f343af50a"
 )
 
 func main() {
-	from := "test@lenslocked.com"
-	to := "jon@calhoun.io"
-	subject := "This is a test email"
-	plaintext := "This is the body of the email"
-	html := `<h1>Hello there buddy!</h1><p>This is the email</p><p>Hope you enjoy it</p>`
-
-	msg := mail.NewMessage()
-	msg.SetHeader("To", to)
-	msg.SetHeader("From", from)
-	msg.SetHeader("Subject", subject)
-	msg.SetBody("text/plain", plaintext)
-	msg.AddAlternative("text/html", html)
-	msg.WriteTo(os.Stdout)
+	/*
+		email := models.Email{
+			From:      "test@lenslocked.com",
+			To:        "sun.motiani@gmail.com",
+			Subject:   "This is a test email",
+			Plaintext: "This is the body of the email",
+			HTML:      `<h1>Hello there buddy!</h1><p>This is the email</p><p>Hope you enjoy it</p>`,
+		}
+	*/
+	es := models.NewEmailService(models.SMTPConfig{
+		Host:     host,
+		Port:     port,
+		Username: username,
+		Password: password,
+	})
+	err := es.ForgotPassword("sun.motiani@gmail.com", "https://yayipi.in/")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Email sent")
 }
