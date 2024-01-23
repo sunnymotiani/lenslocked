@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	DefaultSender = "support@sunnytextiles.com"
+	// DefaultSender is the default email address to send emails from.
+	DefaultSender = "support@lenslocked.com"
 )
 
 type Email struct {
@@ -27,7 +28,7 @@ type SMTPConfig struct {
 
 func NewEmailService(config SMTPConfig) *EmailService {
 	es := EmailService{
-		dailer: mail.NewDialer(config.Host, config.Port, config.Username, config.Password),
+		dialer: mail.NewDialer(config.Host, config.Port, config.Username, config.Password),
 	}
 	return &es
 }
@@ -39,13 +40,12 @@ type EmailService struct {
 	DefaultSender string
 
 	// unexported fields
-	dailer *mail.Dialer
+	dialer *mail.Dialer
 }
 
 func (es *EmailService) Send(email Email) error {
 	msg := mail.NewMessage()
 	msg.SetHeader("To", email.To)
-	msg.SetHeader("From", email.From)
 	es.setFrom(msg, email)
 	msg.SetHeader("Subject", email.Subject)
 	switch {
@@ -57,7 +57,7 @@ func (es *EmailService) Send(email Email) error {
 	case email.HTML != "":
 		msg.SetBody("text/html", email.HTML)
 	}
-	err := es.dailer.DialAndSend(msg)
+	err := es.dialer.DialAndSend(msg)
 	if err != nil {
 		return fmt.Errorf("send: %w", err)
 	}
@@ -68,7 +68,7 @@ func (es *EmailService) ForgotPassword(to, resetURL string) error {
 	email := Email{
 		Subject:   "Reset your password",
 		To:        to,
-		Plaintext: "To reset your password , please visit the following link: " + resetURL,
+		Plaintext: "To reset your password, please visit the following link: " + resetURL,
 		HTML:      `<p>To reset your password, please visit the following link: <a href="` + resetURL + `">` + resetURL + `</a></p>`,
 	}
 	err := es.Send(email)
@@ -78,6 +78,10 @@ func (es *EmailService) ForgotPassword(to, resetURL string) error {
 	return nil
 }
 
+// Used to set the sender of the message. The priority is:
+//   - email.From
+//   - EmailService.DefaultSender
+//   - DefaultSender (package const)
 func (es *EmailService) setFrom(msg *mail.Message, email Email) {
 	var from string
 	switch {
