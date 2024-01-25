@@ -116,7 +116,6 @@ func main() {
 		templates.FS,
 		"check-your-email.gohtml", "tailwind.gohtml",
 	))
-
 	usersC.Templates.ResetPassword = views.Must(views.ParseFS(
 		templates.FS,
 		"reset-pw.gohtml", "tailwind.gohtml",

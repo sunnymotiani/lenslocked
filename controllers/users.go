@@ -109,7 +109,7 @@ func (u Users) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 		Email string
 	}
 	data.Email = r.FormValue("email")
-	u.Templates.CheckYourEmail.Execute(w, r, data)
+	u.Templates.ForgotPassword.Execute(w, r, data)
 }
 
 func (u Users) ProcessForgotPassword(w http.ResponseWriter, r *http.Request) {
@@ -140,7 +140,7 @@ func (u Users) ProcessForgotPassword(w http.ResponseWriter, r *http.Request) {
 	// Don't render the token here! We need them to confirm they have access to
 	// their email to get the token. Sharing it here would be a massive security
 	// hole.
-	u.Templates.ForgotPassword.Execute(w, r, data)
+	u.Templates.CheckYourEmail.Execute(w, r, data)
 }
 
 func (u Users) ResetPassword(w http.ResponseWriter, r *http.Request) {
@@ -158,30 +158,32 @@ func (u Users) ProcessResetPassword(w http.ResponseWriter, r *http.Request) {
 	}
 	data.Token = r.FormValue("token")
 	data.Password = r.FormValue("password")
+
 	user, err := u.PasswordResetService.Consume(data.Token)
 	if err != nil {
 		fmt.Println(err)
-		//TODO: DISTINGUISH DIFFRENT TYPES OF ERRORS
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		// TODO: Distinguish between server errors and invalid token errors.
+		http.Error(w, "Something went wrong.", http.StatusInternalServerError)
 		return
 	}
+
 	err = u.UserService.UpdatePassword(user.ID, data.Password)
 	if err != nil {
 		fmt.Println(err)
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong.", http.StatusInternalServerError)
 		return
 	}
-	//SIGN THE USER IN NOW THAT THIER PASSWORD IS RESET
 
-	//ANY ERROR FROM THIS POINT SHOULD REDIRECT USER TO SIGNIN PAGE
+	// Sign the user in now that they have reset their password.
+	// Any errors from this point onward should redirect to the sign in page.
 	session, err := u.SessionService.Create(user.ID)
 	if err != nil {
 		fmt.Println(err)
 		http.Redirect(w, r, "/signin", http.StatusFound)
+		return
 	}
 	setCookie(w, CookieSession, session.Token)
 	http.Redirect(w, r, "/users/me", http.StatusFound)
-
 }
 
 type UserMiddleware struct {

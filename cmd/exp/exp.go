@@ -24,22 +24,13 @@ func main() {
 	username := os.Getenv("SMTP_USERNAME")
 	password := os.Getenv("SMTP_PASSWORD")
 
-	/*
-		email := models.Email{
-			From:      "test@lenslocked.com",
-			To:        "sun.motiani@gmail.com",
-			Subject:   "This is a test email",
-			Plaintext: "This is the body of the email",
-			HTML:      `<h1>Hello there buddy!</h1><p>This is the email</p><p>Hope you enjoy it</p>`,
-		}
-	*/
 	es := models.NewEmailService(models.SMTPConfig{
 		Host:     host,
 		Port:     port,
 		Username: username,
 		Password: password,
 	})
-	err = es.ForgotPassword("sun.motiani@gmail.com", "https://yayipi.in/")
+	err = es.ForgotPassword("jon@calhoun.io", "https://lenslocked.com/reset-pw?token=abc123")
 	if err != nil {
 		panic(err)
 	}

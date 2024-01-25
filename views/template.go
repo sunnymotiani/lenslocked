@@ -28,8 +28,15 @@ func ParseFS(fs fs.FS, patterns ...string) (Template, error) {
 			"csrfField": func() (template.HTML, error) {
 				return "", fmt.Errorf("csrfField not implemented")
 			},
-			"currentUser": func() (template.HTML, error) {
-				return "", fmt.Errorf("currentUser not implemented")
+			"currentUser": func() (*models.User, error) {
+				return nil, fmt.Errorf("currentUser not implemented")
+			},
+			"errors": func() []string {
+				return []string{
+					"Don't do that!",
+					"The email address you provided is already associated with an account",
+					"something went wrong !",
+				}
 			},
 		},
 	)
